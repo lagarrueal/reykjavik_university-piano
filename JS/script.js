@@ -1,17 +1,15 @@
-
-
 function getAllTunes() {
     //The URL to which we will send the request
-    var url = 'https://veff2022-h6.herokuapp.com/api/v1/tunes';
-
+    var url = 'https://veff2022-h3.herokuapp.com/api/v1/tunes';
     //Perform a GET request to the url
     axios.get(url)
         .then(function (response) {
             //When successful, print the received data
-            //console.log("Success: ", response.data);
+            console.log("Success: ", response.data);
             //response.data is an array if the request was successful, so you could iterate through it using a for loop.
             const text = JSON.stringify(response.data);
             const textParser = JSON.parse(text);
+            allTunes = response.data
             for (let index = 0; index < textParser.length; index++) {
                 console.log(textParser[index].name)
                 var tunes = document.createElement("option");
@@ -19,13 +17,13 @@ function getAllTunes() {
                 tunes.appendChild(tuneName)
                 document.getElementById("tunesDrop").appendChild(tunes)
             }
+            return allTunes;
         })
         .catch(function (error) {
             //When unsuccessful, print the error.
             console.log(error);
         })
         .then(function () {
-            // This code is always executed, independent of whether the request succeeds or fails.
         });
 }
 
@@ -35,12 +33,84 @@ var synth = new Tone.Synth().toDestination();
 function playNote(key) {
     //initialise a timer to decide when to play individual notes
     var now = Tone.now();
-
     //Play a C4 as an 8th note
-    synth.triggerAttackRelease(key,"8n", now);
-
+    synth.triggerAttackRelease(key, "8n", now);
 }
 
+
+document.addEventListener('keyup', playNoteFromKeyboard);
+function playNoteFromKeyboard() {
+    switch (event.key) {
+        case "a":
+            playNote('c4')
+            break;
+        case "w":
+            playNote('c#4')
+            break;
+        case "s":
+            playNote('d4')
+            break;
+        case "e":
+            playNote('d#4')
+            break;
+        case "d":
+            playNote('e4')
+            break;
+        case "f":
+            playNote('f4')
+            break;
+        case "t":
+            playNote('f#4')
+            break;
+        case "g":
+            playNote('g4')
+            break;
+        case "y":
+            playNote('g#4')
+            break;
+        case "h":
+            playNote('a4')
+            break;
+        case "u":
+            playNote('bb4')
+            break;
+        case "j":
+            playNote('b4')
+            break;
+        case "k":
+            playNote('c5')
+            break;
+        case "o":
+            playNote('c#5')
+            break;
+        case "l":
+            playNote('d5')
+            break;
+        case "p":
+            playNote('d#5')
+            break;
+        case ";":
+            playNote('e5')
+            break;
+        default:
+            break;
+    }
+    event.preventDefault();
+}
+
+var synth = new Tone.Synth().toDestination();
+function playTune(){
+    var now = Tone.now();
+    var element = document.getElementById("tunesDrop")
+    var tuneNumber = parseInt(element.selectedIndex);
+    const tune = allTunes[tuneNumber]
+    for (let index = 0; index < tune.tune.length; index++) {
+        const duration = tune.tune[index].duration;
+        const note = tune.tune[index].note;
+        const timing = tune.tune[index].timing;
+        synth.triggerAttackRelease(note,duration,now+timing)       
+    }
+}
 
 
 
