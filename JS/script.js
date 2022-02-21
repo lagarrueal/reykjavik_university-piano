@@ -4,7 +4,7 @@ var record = [];
 
 function getAllTunes() {
     //The URL to which we will send the request
-    var url = 'https://veff2022-h6.herokuapp.com/api/v1/tunes';
+    const url = 'https://veff2022-h6.herokuapp.com/api/v1/tunes';
     //Perform a GET request to the url
     axios.get(url)
         .then(function (response) {
@@ -105,7 +105,7 @@ function playTune() {
     }
 }
 
-function startRecording(){
+function startRecording() {
     document.getElementById("recordbtn").disabled = true;
     document.getElementById("stopbtn").disabled = false;
     isRecording = true;
@@ -113,24 +113,44 @@ function startRecording(){
     record.tune = []
 }
 
-function stopRecording(){
+function stopRecording() {
     document.getElementById("recordbtn").disabled = false;
     document.getElementById("stopbtn").disabled = true;
     isRecording = false;
-    record.name = document.getElementById("recordName").value
-    document.getElementById("recordName")
+    if (record.name == '') {
+        record.name = "Unamed tune";
+    }
+    else {
+        record.name = document.getElementById("recordName").value
+    }
     console.log(record)
+    if (record.tune.length > 0) {
+        postRecord( { 
+            name: record.name,
+            tune: record.tune 
+            }
+            )
+    }
 
 }
 
-//We initialise the synthesiser
-var synth = new Tone.Synth().toDestination();
+function postRecord(data) {
+    const url = 'https://veff2022-h6.herokuapp.com/api/v1/tunes';
+    axios.post(url, data)
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+
+
 function playNote(key) {
-    //initialise a timer to decide when to play individual notes
     var now = Tone.now();
-    //Play a C4 as an 8th note
     synth.triggerAttackRelease(key, "8n", now);
     if (isRecording == true) {
-        record.tune.push({note: key, duration: "8n", timing: Tone.now() - start });
+        record.tune.push({ note: key, duration: "8n", timing: Tone.now() - start });
     }
 }
