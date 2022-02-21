@@ -3,19 +3,14 @@ var start;
 var record = [];
 
 function getAllTunes() {
-    //The URL to which we will send the request
     const url = 'https://veff2022-h6.herokuapp.com/api/v1/tunes';
-    //Perform a GET request to the url
     axios.get(url)
         .then(function (response) {
-            //When successful, print the received data
             console.log("Success: ", response.data);
-            //response.data is an array if the request was successful, so you could iterate through it using a for loop.
             const text = JSON.stringify(response.data);
             const textParser = JSON.parse(text);
             allTunes = response.data
             for (let index = 0; index < textParser.length; index++) {
-                console.log(textParser[index].name)
                 var tunes = document.createElement("option");
                 var tuneName = document.createTextNode(textParser[index].name);
                 tunes.appendChild(tuneName)
@@ -24,7 +19,6 @@ function getAllTunes() {
             return allTunes;
         })
         .catch(function (error) {
-            //When unsuccessful, print the error.
             console.log(error);
         })
         .then(function () {
@@ -33,6 +27,8 @@ function getAllTunes() {
 
 document.addEventListener('keyup', playNoteFromKeyboard);
 function playNoteFromKeyboard() {
+    //event is deprecated but I found that since the replacement is still in development
+    //it is still okay to use it.
     switch (event.key) {
         case "a":
             playNote('c4')
@@ -128,10 +124,8 @@ function stopRecording() {
         postRecord( { 
             name: record.name,
             tune: record.tune 
-            }
-            )
+            } )
     }
-
 }
 
 function postRecord(data) {
