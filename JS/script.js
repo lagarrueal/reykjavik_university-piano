@@ -133,6 +133,7 @@ function postRecord(data) {
     axios.post(url, data)
         .then(function (response) {
             console.log(response);
+            updateTunesList();
         })
         .catch(function (error) {
             console.log(error);
@@ -147,4 +148,10 @@ function playNote(key) {
     if (isRecording == true) {
         record.tune.push({ note: key, duration: "8n", timing: Tone.now() - start });
     }
+}
+
+function updateTunesList(){
+    allTunes = null;
+    document.getElementById("tunesDrop").length = 0;
+    getAllTunes();
 }
